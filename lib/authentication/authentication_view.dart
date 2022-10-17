@@ -3,6 +3,7 @@ import 'package:flutter_social/authentication/signin/signin.dart';
 import 'package:flutter_social/authentication/signup/signup.dart';
 import 'package:flutter_social/components/animated_button.dart';
 import 'package:flutter_social/components/auth_switch_button.dart';
+import 'package:flutter_social/components/slide_fade_switcher.dart';
 import 'package:flutter_social/components/text_input_field.dart';
 
 class AuthenticationView extends StatefulWidget {
@@ -28,7 +29,7 @@ class _AuthenticationViewState extends State<AuthenticationView> {
               16,
               0,
             ),
-            child: _showSignIn ? SignIn() : SignUp(),
+            child: SlideFadeSwitcher(child: _showSignIn ? SignIn() : SignUp()),
           ),
           AuthSwitchButton(
             showSignIn: _showSignIn,
