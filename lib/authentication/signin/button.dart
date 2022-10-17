@@ -11,7 +11,6 @@ class SignInButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedButton(
       onTap: () {
-        ErrorDialog.show(context, "failed loading");
       },
       child: RoundedButtonStyle(
         title: "Sign In",
