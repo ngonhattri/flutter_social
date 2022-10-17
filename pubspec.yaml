@@ -41,6 +41,9 @@ dependencies:
   equatable: ^2.0.5
   form_validators:
     path: packages/form_validators
+  authentication_repository:
+    path: packages/firebase_auth_repository
+  firebase_core: ^1.24.0
 
 dev_dependencies:
   flutter_test:
@@ -51,7 +54,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^2.0.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
