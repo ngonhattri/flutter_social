@@ -45,6 +45,7 @@ dependencies:
     path: packages/firebase_auth_repository
   firebase_core: ^1.24.0
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -55,10 +56,13 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.1
-
+  flutter_native_splash: ^2.2.11
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
+flutter_native_splash:
+  image: assets/kocial_logo2.png
+  color: "#ffffff"
 # The following section is specific to Flutter packages.
 flutter:
 
@@ -68,8 +72,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+     - assets/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
