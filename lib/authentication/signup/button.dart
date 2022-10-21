@@ -15,7 +15,7 @@ class SignUpButton extends ConsumerWidget {
     final bool isValidated = signUpState.status.isValidated;
     return AnimatedButton(
       onTap: isValidated
-          ? () => signUpController.signUpWithEmailAndPassword()
+          ? () => signUpController.signUpWithEmailAndPassword(ref)
           : null,
       child: const RoundedButtonStyle(
         title: "Sign Up",
