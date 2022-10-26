@@ -70,6 +70,8 @@ class SignUpController extends StateNotifier<SignUpState> {
           'name': state.name.value,
           'email': state.email.value,
           'profilePicture': '',
+          'bio': '',
+          'coverImage': '',
         },
       );
       state = state.copyWith(status: FormzStatus.submissionSuccess);

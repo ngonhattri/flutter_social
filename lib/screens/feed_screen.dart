@@ -4,7 +4,9 @@ import 'package:flutter_social/profile/profile.dart';
 import 'package:flutter_social/screens/home_screen.dart';
 
 class FeedScreen extends StatefulWidget {
-  const FeedScreen({Key? key}) : super(key: key);
+  final String currentUserId;
+
+  const FeedScreen({Key? key, required this.currentUserId}) : super(key: key);
 
   @override
   State<FeedScreen> createState() => _FeedScreenState();
@@ -12,18 +14,23 @@ class FeedScreen extends StatefulWidget {
 
 class _FeedScreenState extends State<FeedScreen> {
   int _selectedTab = 0;
-  final List<Widget> _feedScreens = const [
-    HomeScreen(),
-    Profile(),
-  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _feedScreens.elementAt(_selectedTab),
+      body: [
+        const HomeScreen(),
+        ProfileScreen(
+          currentUserId: widget.currentUserId,
+          visitedUserId: widget.currentUserId,
+        ),
+      ].elementAt(_selectedTab),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white,
-        child: const Icon(Icons.add, color: Color(0xff00acee),),
+        child: const Icon(
+          Icons.add,
+          color: Color(0xff00acee),
+        ),
         onPressed: () {},
       ),
       bottomNavigationBar: CupertinoTabBar(
