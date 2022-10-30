@@ -4,44 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_social/authentication/controller/authentication_controller.dart';
 import 'package:flutter_social/constants/constants.dart';
 import 'package:flutter_social/models/user_model.dart';
+import 'package:flutter_social/profile/edit_profile_screen.dart';
 import 'package:flutter_social/services/database_service.dart';
-
-// class Profile extends ConsumerWidget {
-//   final String currentUserId;
-//   final String visitedUserId;
-//
-//   const Profile({
-//     Key? key,
-//     required this.currentUserId,
-//     required this.visitedUserId,
-//   }) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     final authController = ref.read(authProvider.notifier);
-//     final authUser = ref.watch(authProvider).user;
-//
-//     return Scaffold(
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           crossAxisAlignment: CrossAxisAlignment.center,
-//           children: [
-//             Text("user id ${authUser.id}"),
-//             Text("user email ${authUser.email}"),
-//             Text("email verified ${authUser.emailVerified}"),
-//             TextButton(
-//               child: const Text("Signout"),
-//               onPressed: () {
-//                 authController.onSignOut();
-//               },
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class ProfileScreen extends ConsumerStatefulWidget {
   final String currentUserId;
@@ -99,7 +63,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
   };
 
   Widget BuildProfileWidgets() {
-    switch(_profileSegmentedValue) {
+    switch (_profileSegmentedValue) {
       case 0:
         return Center(child: Text('Posts', style: TextStyle(fontSize: 25)));
         break;
@@ -110,7 +74,8 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
         return Center(child: Text('Likes', style: TextStyle(fontSize: 25)));
         break;
       default:
-        return Center(child: Text('Something wrong', style: TextStyle(fontSize: 25)));
+        return Center(
+            child: Text('Something wrong', style: TextStyle(fontSize: 25)));
         break;
     }
   }
@@ -216,31 +181,42 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                               ? null
                               : NetworkImage(userModel.profilePicture),
                         ),
-                        Container(
-                          width: 100,
-                          height: 35,
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.white,
-                            border: Border.all(color: kocialColor),
-                          ),
-                          child: Center(
-                            child: Text(
-                              'Edit',
-                              style: TextStyle(
-                                fontSize: 17,
-                                color: kocialColor,
-                                fontWeight: FontWeight.bold,
+                        GestureDetector(
+                          onTap: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditProfileScreen(
+                                  user: userModel,
+                                ),
+                              ),
+                            );
+                            setState(() {});
+                          },
+                          child: Container(
+                            width: 100,
+                            height: 35,
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.white,
+                              border: Border.all(color: kocialColor),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Edit',
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  color: kocialColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    SizedBox(height: 10),
                     Text(
                       userModel.name,
                       style: TextStyle(

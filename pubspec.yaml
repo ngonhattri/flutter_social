@@ -45,7 +45,11 @@ dependencies:
     path: packages/firebase_auth_repository
   firebase_core: ^1.24.0
   cloud_firestore: ^3.5.1
-
+  image_picker:
+  firebase_storage:
+  flutter_image_compress:
+  path_provider:
+  uuid:
 
 dev_dependencies:
   flutter_test:
@@ -57,7 +61,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.1
-  flutter_native_splash: ^2.2.11
+  flutter_native_splash: ^2.2.12
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
