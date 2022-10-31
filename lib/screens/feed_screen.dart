@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_social/profile/profile.dart';
 import 'package:flutter_social/screens/home_screen.dart';
+import 'package:flutter_social/screens/posts/create_post_screen.dart';
 
 class FeedScreen extends StatefulWidget {
   final String currentUserId;
@@ -31,7 +32,16 @@ class _FeedScreenState extends State<FeedScreen> {
           Icons.add,
           color: Color(0xff00acee),
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CreatePostScreen(
+                currentUserId: widget.currentUserId,
+              ),
+            ),
+          );
+        },
       ),
       bottomNavigationBar: CupertinoTabBar(
         onTap: (index) {
