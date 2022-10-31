@@ -68,6 +68,10 @@ dev_dependencies:
 flutter_native_splash:
   image: assets/kocial_logo2.png
   color: "#ffffff"
+
+  android_12:
+    image: assets/anya.png
+    icon_background_color: "#ffffff"
 # The following section is specific to Flutter packages.
 flutter:
 

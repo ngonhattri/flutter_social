@@ -66,17 +66,15 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
     switch (_profileSegmentedValue) {
       case 0:
         return Center(child: Text('Posts', style: TextStyle(fontSize: 25)));
-        break;
       case 1:
         return Center(child: Text('Media', style: TextStyle(fontSize: 25)));
-        break;
+
       case 2:
         return Center(child: Text('Likes', style: TextStyle(fontSize: 25)));
-        break;
+
       default:
         return Center(
             child: Text('Something wrong', style: TextStyle(fontSize: 25)));
-        break;
     }
   }
 
