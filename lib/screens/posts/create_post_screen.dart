@@ -44,7 +44,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         backgroundColor: kocialColor,
         centerTitle: true,
         title: Text(
-          'Tweet',
+          'Post',
           style: TextStyle(
             color: Colors.white,
             fontSize: 20,
@@ -60,7 +60,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               maxLength: 280,
               maxLines: 7,
               decoration: InputDecoration(
-                hintText: 'Enter your Tweet',
+                hintText: 'Enter your post',
               ),
               onChanged: (value) {
                 _postText = value;
@@ -105,7 +105,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             ),
             SizedBox(height: 20),
             RoundedButton(
-              btnText: 'Tweet',
+              btnText: 'Post',
               onBtnPressed: () async {
                 setState(() {
                   _loading = true;
