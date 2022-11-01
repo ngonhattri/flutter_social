@@ -24,12 +24,7 @@ class _AuthenticationViewState extends State<AuthenticationView> {
       body: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(
-              16,
-              250,
-              16,
-              0,
-            ),
+            padding: const EdgeInsets.fromLTRB(16, 250, 16, 0),
             child: SlideFadeSwitcher(
                 child: _showSignIn ? const SignIn() : const SignUp()),
           ),

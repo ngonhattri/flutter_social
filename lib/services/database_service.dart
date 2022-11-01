@@ -26,7 +26,7 @@ class DatabaseService {
   }
 
   static void createPost(Post post) {
-    postsRef.doc(post.auhorId).set({'PostTime':post.timestamp});
+    postsRef.doc(post.auhorId).set({'PostTime': post.timestamp});
     postsRef.doc(post.auhorId).collection('userPosts').add({
       'text': post.text,
       'image': post.image,
@@ -35,5 +35,15 @@ class DatabaseService {
       'likes': post.likes,
       'shares': post.shares,
     });
+  }
+
+  static Future<List<Post>> getUserPosts(String userId) async {
+    QuerySnapshot userPostsSnap = await postsRef
+        .doc(userId)
+        .collection('userPosts')
+        .orderBy('timeStamp', descending: true)
+        .get();
+    List<Post> userPosts = userPostsSnap.docs.map((doc) => Post.fromDoc(doc)).toList();
+    return userPosts;
   }
 }

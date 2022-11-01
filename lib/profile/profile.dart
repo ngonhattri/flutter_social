@@ -6,6 +6,9 @@ import 'package:flutter_social/constants/constants.dart';
 import 'package:flutter_social/models/user_model.dart';
 import 'package:flutter_social/profile/edit_profile_screen.dart';
 import 'package:flutter_social/services/database_service.dart';
+import 'package:flutter_social/widgets/post_container.dart';
+
+import '../models/post.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   final String currentUserId;
@@ -24,6 +27,8 @@ class ProfileScreen extends ConsumerStatefulWidget {
 class ProfileScreenState extends ConsumerState<ProfileScreen> {
   int _followersCount = 0;
   int _followingCount = 0;
+  List<Post> _allPosts = [];
+  List<Post> _mediaPosts = [];
 
   int _profileSegmentedValue = 0;
   Map<int, Widget> _profileTabs = <int, Widget>{
@@ -62,10 +67,19 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
     ),
   };
 
-  Widget BuildProfileWidgets() {
+  Widget BuildProfileWidgets(UserModel author) {
     switch (_profileSegmentedValue) {
       case 0:
-        return Center(child: Text('Posts', style: TextStyle(fontSize: 25)));
+        return ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: _allPosts.length,
+            itemBuilder: (context, index) {
+              return PostContainer(
+                post: _allPosts[index],
+                author: author,
+              );
+            });
       case 1:
         return Center(child: Text('Media', style: TextStyle(fontSize: 25)));
 
@@ -98,11 +112,23 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
     }
   }
 
+  getAllPosts() async {
+    List<Post> userPosts = await DatabaseService.getUserPosts(widget.visitedUserId);
+    if (mounted) {
+      setState(() {
+        _allPosts = userPosts;
+        _mediaPosts =
+            _allPosts.where((element) => element.image.isNotEmpty).toList();
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     getFollowersCount();
     getFollowingCount();
+    getAllPosts();
   }
 
   @override
@@ -267,7 +293,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                   ],
                 ),
               ),
-              BuildProfileWidgets(),
+              BuildProfileWidgets(userModel),
             ],
           );
         },

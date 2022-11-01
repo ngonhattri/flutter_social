@@ -27,7 +27,7 @@ class Post {
       auhorId: doc['authorId'],
       text: doc['text'],
       image: doc['image'],
-      timestamp: doc['timestamp'],
+      timestamp: doc['timeStamp'],
       likes: doc['likes'],
       shares: doc['shares'],
     );

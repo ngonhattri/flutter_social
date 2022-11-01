@@ -110,7 +110,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 setState(() {
                   _loading = true;
                 });
-                if (_postText != null && _postText!.isNotEmpty) {
+                if (_postText != null && _postText.isNotEmpty) {
                   String image;
                   if (_pickedImage == null) {
                     image = '';
