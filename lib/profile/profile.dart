@@ -81,8 +81,16 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
               );
             });
       case 1:
-        return Center(child: Text('Media', style: TextStyle(fontSize: 25)));
-
+        return ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: _mediaPosts.length,
+            itemBuilder: (context, index) {
+              return PostContainer(
+                post: _mediaPosts[index],
+                author: author,
+              );
+            });
       case 2:
         return Center(child: Text('Likes', style: TextStyle(fontSize: 25)));
 
