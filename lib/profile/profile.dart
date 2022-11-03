@@ -27,11 +27,12 @@ class ProfileScreen extends ConsumerStatefulWidget {
 class ProfileScreenState extends ConsumerState<ProfileScreen> {
   int _followersCount = 0;
   int _followingCount = 0;
+  bool _isFollowing = false;
   List<Post> _allPosts = [];
   List<Post> _mediaPosts = [];
 
   int _profileSegmentedValue = 0;
-  Map<int, Widget> _profileTabs = <int, Widget>{
+  final Map<int, Widget> _profileTabs = <int, Widget>{
     0: Padding(
       padding: EdgeInsets.symmetric(vertical: 10),
       child: Text(
@@ -67,7 +68,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
     ),
   };
 
-  Widget BuildProfileWidgets(UserModel author) {
+  Widget profileWidgets(UserModel author) {
     switch (_profileSegmentedValue) {
       case 0:
         return ListView.builder(
@@ -112,7 +113,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   getFollowingCount() async {
     int followingCount =
-        await DatabaseService.followersNum(widget.visitedUserId);
+        await DatabaseService.followingNum(widget.visitedUserId);
     if (mounted) {
       setState(() {
         _followingCount = followingCount;
@@ -121,7 +122,8 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   getAllPosts() async {
-    List<Post> userPosts = await DatabaseService.getUserPosts(widget.visitedUserId);
+    List<Post> userPosts =
+        await DatabaseService.getUserPosts(widget.visitedUserId);
     if (mounted) {
       setState(() {
         _allPosts = userPosts;
@@ -131,11 +133,44 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
     }
   }
 
+  followOrUnFollow() {
+    if (_isFollowing) {
+      unFollowUser();
+    } else {
+      followUser();
+    }
+  }
+
+  unFollowUser() {
+    DatabaseService.unFollowUser(widget.currentUserId, widget.visitedUserId);
+    setState(() {
+      _isFollowing = false;
+      _followersCount--;
+    });
+  }
+
+  followUser() {
+    DatabaseService.followUser(widget.currentUserId, widget.visitedUserId);
+    setState(() {
+      _isFollowing = true;
+      _followersCount++;
+    });
+  }
+
+  setupIsFollowing() async {
+    bool isFollowingThisUser = await DatabaseService.isFollowingUser(
+        widget.currentUserId, widget.visitedUserId);
+    setState(() {
+      _isFollowing = isFollowingThisUser;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     getFollowersCount();
     getFollowingCount();
+    setupIsFollowing();
     getAllPosts();
   }
 
@@ -178,21 +213,22 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox.shrink(),
+                      widget.currentUserId == widget.visitedUserId ?
                       PopupMenuButton(
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.more_horiz,
                           color: Colors.black,
                         ),
                         itemBuilder: (_) {
                           return <PopupMenuItem<String>>[
-                            new PopupMenuItem(
-                              child: Text('Logout'),
+                            const PopupMenuItem(
                               value: 'logout',
+                              child: Text('Logout'),
                             )
                           ];
                         },
                         onSelected: (selectedItem) {},
-                      ),
+                      ) : const SizedBox(),
                     ],
                   ),
                 ),
@@ -210,45 +246,74 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                         CircleAvatar(
                           radius: 45,
                           backgroundImage: userModel.profilePicture.isEmpty
-                              ? null
-                              : NetworkImage(userModel.profilePicture),
+                              ? const AssetImage('assets/anya.png')
+                              : NetworkImage(userModel.profilePicture)
+                                  as ImageProvider,
                         ),
-                        GestureDetector(
-                          onTap: () async {
-                            await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => EditProfileScreen(
-                                  user: userModel,
+                        widget.currentUserId == widget.visitedUserId
+                            ? GestureDetector(
+                                onTap: () async {
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => EditProfileScreen(
+                                        user: userModel,
+                                      ),
+                                    ),
+                                  );
+                                  setState(() {});
+                                },
+                                child: Container(
+                                  width: 100,
+                                  height: 35,
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: Colors.white,
+                                    border: Border.all(color: kocialColor),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      'Edit',
+                                      style: TextStyle(
+                                        fontSize: 17,
+                                        color: kocialColor,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : GestureDetector(
+                                onTap: followOrUnFollow,
+                                child: Container(
+                                  width: 100,
+                                  height: 35,
+                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: _isFollowing
+                                        ? Colors.white
+                                        : kocialColor,
+                                    border: Border.all(color: kocialColor),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      _isFollowing ? 'Following' : 'Follow',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: _isFollowing
+                                            ? kocialColor
+                                            : Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            );
-                            setState(() {});
-                          },
-                          child: Container(
-                            width: 100,
-                            height: 35,
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: Colors.white,
-                              border: Border.all(color: kocialColor),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'Edit',
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  color: kocialColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
                       ],
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Text(
                       userModel.name,
                       style: TextStyle(
@@ -275,7 +340,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                         ),
                         SizedBox(width: 20),
                         Text(
-                          '$_followersCount Following',
+                          '$_followersCount Followers',
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
@@ -301,7 +366,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                   ],
                 ),
               ),
-              BuildProfileWidgets(userModel),
+              profileWidgets(userModel),
             ],
           );
         },
