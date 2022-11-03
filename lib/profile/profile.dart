@@ -183,7 +183,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
         future: usersRef.doc(widget.visitedUserId).get(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (!snapshot.hasData) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation(kocialColor),
               ),
@@ -212,23 +212,28 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox.shrink(),
-                      widget.currentUserId == widget.visitedUserId ?
-                      PopupMenuButton(
-                        icon: const Icon(
-                          Icons.more_horiz,
-                          color: Colors.black,
-                        ),
-                        itemBuilder: (_) {
-                          return <PopupMenuItem<String>>[
-                            const PopupMenuItem(
-                              value: 'logout',
-                              child: Text('Logout'),
+                      const SizedBox.shrink(),
+                      widget.currentUserId == widget.visitedUserId
+                          ? PopupMenuButton(
+                              icon: const Icon(
+                                Icons.more_horiz,
+                                color: Colors.black,
+                              ),
+                              itemBuilder: (_) {
+                                return <PopupMenuItem<String>>[
+                                  const PopupMenuItem(
+                                    value: 'logout',
+                                    child: Text('Logout'),
+                                  )
+                                ];
+                              },
+                              onSelected: (selectedItem) {
+                                if (selectedItem == 'logout') {
+                                  authController.onSignOut();
+                                }
+                              },
                             )
-                          ];
-                        },
-                        onSelected: (selectedItem) {},
-                      ) : const SizedBox(),
+                          : const SizedBox(),
                     ],
                   ),
                 ),
@@ -289,7 +294,8 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                                 child: Container(
                                   width: 100,
                                   height: 35,
-                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
                                     color: _isFollowing
@@ -348,8 +354,8 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                         )
                       ],
                     ),
-                    SizedBox(height: 20),
-                    Container(
+                    const SizedBox(height: 20),
+                    SizedBox(
                       width: MediaQuery.of(context).size.width,
                       child: CupertinoSlidingSegmentedControl(
                         groupValue: _profileSegmentedValue,
