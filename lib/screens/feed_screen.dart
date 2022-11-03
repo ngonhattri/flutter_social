@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_social/profile/profile.dart';
 import 'package:flutter_social/screens/home_screen.dart';
 import 'package:flutter_social/screens/posts/create_post_screen.dart';
+import 'package:flutter_social/screens/search/search_screen.dart';
 
 class FeedScreen extends StatefulWidget {
   final String currentUserId;
@@ -21,6 +22,9 @@ class _FeedScreenState extends State<FeedScreen> {
     return Scaffold(
       body: [
         const HomeScreen(),
+        SearchScreen(
+          currentUserId: widget.currentUserId,
+        ),
         ProfileScreen(
           currentUserId: widget.currentUserId,
           visitedUserId: widget.currentUserId,
@@ -53,6 +57,7 @@ class _FeedScreenState extends State<FeedScreen> {
         currentIndex: _selectedTab,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home)),
+          BottomNavigationBarItem(icon: Icon(Icons.search)),
           BottomNavigationBarItem(icon: Icon(Icons.person)),
         ],
       ),

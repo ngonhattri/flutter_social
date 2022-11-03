@@ -25,6 +25,14 @@ class DatabaseService {
     });
   }
 
+  static Future<QuerySnapshot> searchUsers(String name) async {
+    Future<QuerySnapshot> users = usersRef
+        .where('name', isGreaterThanOrEqualTo: name)
+        .where('name', isLessThan: '${name}z')
+        .get();
+    return users;
+  }
+
   static void createPost(Post post) {
     postsRef.doc(post.auhorId).set({'PostTime': post.timestamp});
     postsRef.doc(post.auhorId).collection('userPosts').add({
@@ -43,7 +51,8 @@ class DatabaseService {
         .collection('userPosts')
         .orderBy('timeStamp', descending: true)
         .get();
-    List<Post> userPosts = userPostsSnap.docs.map((doc) => Post.fromDoc(doc)).toList();
+    List<Post> userPosts =
+        userPostsSnap.docs.map((doc) => Post.fromDoc(doc)).toList();
     return userPosts;
   }
 }
