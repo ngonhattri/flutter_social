@@ -21,7 +21,7 @@ class _FeedScreenState extends State<FeedScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: [
-        const HomeScreen(),
+        HomeScreen(currentUserId: widget.currentUserId),
         SearchScreen(
           currentUserId: widget.currentUserId,
         ),

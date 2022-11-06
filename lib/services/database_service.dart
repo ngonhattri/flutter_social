@@ -79,6 +79,19 @@ class DatabaseService {
       'timeStamp': post.timestamp,
       'likes': post.likes,
       'shares': post.shares,
+    }).then((doc) async {
+      QuerySnapshot followerSnapshot =
+      await followersRef.doc(post.auhorId).collection('Followers').get();
+      for (var docSnapshot in followerSnapshot.docs) {
+        feedRefs.doc(docSnapshot.id).collection('userFeed').doc(doc.id).set({
+          'text': post.text,
+          'image': post.image,
+          "authorId": post.auhorId,
+          "timeStamp": post.timestamp,
+          'likes': post.likes,
+          'shares': post.shares,
+        });
+      }
     });
   }
 
@@ -92,4 +105,17 @@ class DatabaseService {
         userPostsSnap.docs.map((doc) => Post.fromDoc(doc)).toList();
     return userPosts;
   }
+
+  static Future<List<Post>> getHomePosts(String currentUserId) async {
+    QuerySnapshot homePosts = await feedRefs
+        .doc(currentUserId)
+        .collection('userFeed')
+        .orderBy('timeStamp', descending: true)
+        .get();
+
+    List<Post> followingPosts =
+    homePosts.docs.map((doc) => Post.fromDoc(doc)).toList();
+    return followingPosts;
+  }
+
 }

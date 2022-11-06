@@ -15,3 +15,5 @@ final followingRef = _fireStore.collection('following');
 final storageRef = FirebaseStorage.instance.ref();
 
 final postsRef = _fireStore.collection('posts');
+
+final feedRefs = _fireStore.collection('feeds');
