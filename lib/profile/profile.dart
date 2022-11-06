@@ -179,203 +179,206 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
     final authController = ref.read(authProvider.notifier);
     return Scaffold(
       backgroundColor: Colors.white,
-      body: FutureBuilder(
-        future: usersRef.doc(widget.visitedUserId).get(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(kocialColor),
-              ),
-            );
-          }
-          UserModel userModel = UserModel.fromDoc(snapshot.data);
-          return ListView(
-            physics: const BouncingScrollPhysics(
-                parent: AlwaysScrollableScrollPhysics()),
-            children: [
-              Container(
-                height: 150,
-                decoration: BoxDecoration(
-                  color: kocialColor,
-                  image: userModel.coverImage.isEmpty
-                      ? null
-                      : DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(userModel.coverImage),
-                        ),
+      body: RefreshIndicator(
+        onRefresh: () => getAllPosts(),
+        child: FutureBuilder(
+          future: usersRef.doc(widget.visitedUserId).get(),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(kocialColor),
                 ),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              );
+            }
+            UserModel userModel = UserModel.fromDoc(snapshot.data);
+            return ListView(
+              physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics()),
+              children: [
+                Container(
+                  height: 150,
+                  decoration: BoxDecoration(
+                    color: kocialColor,
+                    image: userModel.coverImage.isEmpty
+                        ? null
+                        : DecorationImage(
+                            fit: BoxFit.cover,
+                            image: NetworkImage(userModel.coverImage),
+                          ),
+                  ),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox.shrink(),
+                        widget.currentUserId == widget.visitedUserId
+                            ? PopupMenuButton(
+                                icon: const Icon(
+                                  Icons.more_horiz,
+                                  color: Colors.black,
+                                ),
+                                itemBuilder: (_) {
+                                  return <PopupMenuItem<String>>[
+                                    const PopupMenuItem(
+                                      value: 'logout',
+                                      child: Text('Logout'),
+                                    )
+                                  ];
+                                },
+                                onSelected: (selectedItem) {
+                                  if (selectedItem == 'logout') {
+                                    authController.onSignOut();
+                                  }
+                                },
+                              )
+                            : const SizedBox(),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  transform: Matrix4.translationValues(0.0, -40.0, 0.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox.shrink(),
-                      widget.currentUserId == widget.visitedUserId
-                          ? PopupMenuButton(
-                              icon: const Icon(
-                                Icons.more_horiz,
-                                color: Colors.black,
-                              ),
-                              itemBuilder: (_) {
-                                return <PopupMenuItem<String>>[
-                                  const PopupMenuItem(
-                                    value: 'logout',
-                                    child: Text('Logout'),
-                                  )
-                                ];
-                              },
-                              onSelected: (selectedItem) {
-                                if (selectedItem == 'logout') {
-                                  authController.onSignOut();
-                                }
-                              },
-                            )
-                          : const SizedBox(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          CircleAvatar(
+                            radius: 45,
+                            backgroundImage: userModel.profilePicture.isEmpty
+                                ? const AssetImage('assets/anya.png')
+                                : NetworkImage(userModel.profilePicture)
+                                    as ImageProvider,
+                          ),
+                          widget.currentUserId == widget.visitedUserId
+                              ? GestureDetector(
+                                  onTap: () async {
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => EditProfileScreen(
+                                          user: userModel,
+                                        ),
+                                      ),
+                                    );
+                                    setState(() {});
+                                  },
+                                  child: Container(
+                                    width: 100,
+                                    height: 35,
+                                    padding: EdgeInsets.symmetric(horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: Colors.white,
+                                      border: Border.all(color: kocialColor),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        'Edit',
+                                        style: TextStyle(
+                                          fontSize: 17,
+                                          color: kocialColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : GestureDetector(
+                                  onTap: followOrUnFollow,
+                                  child: Container(
+                                    width: 100,
+                                    height: 35,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: _isFollowing
+                                          ? Colors.white
+                                          : kocialColor,
+                                      border: Border.all(color: kocialColor),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        _isFollowing ? 'Following' : 'Follow',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: _isFollowing
+                                              ? kocialColor
+                                              : Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        userModel.name,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        userModel.bio,
+                        style: TextStyle(
+                          fontSize: 15,
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Row(
+                        children: [
+                          Text(
+                            '$_followingCount Following',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                letterSpacing: 2),
+                          ),
+                          SizedBox(width: 20),
+                          Text(
+                            '$_followersCount Followers',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                letterSpacing: 2),
+                          )
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: CupertinoSlidingSegmentedControl(
+                          groupValue: _profileSegmentedValue,
+                          thumbColor: kocialColor,
+                          backgroundColor: Colors.blueGrey,
+                          children: _profileTabs,
+                          onValueChanged: (i) {
+                            setState(() {
+                              _profileSegmentedValue = i!;
+                            });
+                          },
+                        ),
+                      )
                     ],
                   ),
                 ),
-              ),
-              Container(
-                transform: Matrix4.translationValues(0.0, -40.0, 0.0),
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        CircleAvatar(
-                          radius: 45,
-                          backgroundImage: userModel.profilePicture.isEmpty
-                              ? const AssetImage('assets/anya.png')
-                              : NetworkImage(userModel.profilePicture)
-                                  as ImageProvider,
-                        ),
-                        widget.currentUserId == widget.visitedUserId
-                            ? GestureDetector(
-                                onTap: () async {
-                                  await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => EditProfileScreen(
-                                        user: userModel,
-                                      ),
-                                    ),
-                                  );
-                                  setState(() {});
-                                },
-                                child: Container(
-                                  width: 100,
-                                  height: 35,
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: Colors.white,
-                                    border: Border.all(color: kocialColor),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      'Edit',
-                                      style: TextStyle(
-                                        fontSize: 17,
-                                        color: kocialColor,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : GestureDetector(
-                                onTap: followOrUnFollow,
-                                child: Container(
-                                  width: 100,
-                                  height: 35,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: _isFollowing
-                                        ? Colors.white
-                                        : kocialColor,
-                                    border: Border.all(color: kocialColor),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      _isFollowing ? 'Following' : 'Follow',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: _isFollowing
-                                            ? kocialColor
-                                            : Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      userModel.name,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      userModel.bio,
-                      style: TextStyle(
-                        fontSize: 15,
-                      ),
-                    ),
-                    SizedBox(height: 15),
-                    Row(
-                      children: [
-                        Text(
-                          '$_followingCount Following',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              letterSpacing: 2),
-                        ),
-                        SizedBox(width: 20),
-                        Text(
-                          '$_followersCount Followers',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              letterSpacing: 2),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      child: CupertinoSlidingSegmentedControl(
-                        groupValue: _profileSegmentedValue,
-                        thumbColor: kocialColor,
-                        backgroundColor: Colors.blueGrey,
-                        children: _profileTabs,
-                        onValueChanged: (i) {
-                          setState(() {
-                            _profileSegmentedValue = i!;
-                          });
-                        },
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              profileWidgets(userModel),
-            ],
-          );
-        },
+                profileWidgets(userModel),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
