@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_social/Constants/Constants.dart';
+import 'package:flutter_social/Services/database_service.dart';
 import 'package:flutter_social/models/post.dart';
 import 'package:flutter_social/models/user_model.dart';
 
 class PostContainer extends StatefulWidget {
   final Post post;
   final UserModel author;
-  final String? currentUserId;
+  final String currentUserId;
 
-  const PostContainer({Key? key, required this.post, required this.author, this.currentUserId})
+  const PostContainer(
+      {Key? key,
+      required this.post,
+      required this.author,
+      required this.currentUserId})
       : super(key: key);
 
   @override
@@ -18,6 +23,39 @@ class PostContainer extends StatefulWidget {
 class _PostContainerState extends State<PostContainer> {
   int _likesCount = 0;
   bool _isLiked = false;
+
+  initPostLikes() async {
+    bool isLiked =
+        await DatabaseService.isLikePost(widget.currentUserId, widget.post);
+    if(mounted) {
+      setState(() {
+        _isLiked = isLiked;
+      });
+    }
+  }
+
+  likePost() {
+    if (_isLiked) {
+      DatabaseService.unLikePost(widget.currentUserId, widget.post);
+      setState(() {
+        _isLiked = false;
+        _likesCount--;
+      });
+    } else {
+      DatabaseService.likePost(widget.currentUserId, widget.post);
+      setState(() {
+        _isLiked = true;
+        _likesCount++;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _likesCount = widget.post.likes;
+    initPostLikes();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,13 +116,14 @@ class _PostContainerState extends State<PostContainer> {
                   Row(
                     children: [
                       IconButton(
-                        onPressed: () {},
+                        onPressed: likePost,
                         icon: Icon(
-                          Icons.favorite_border,
+                          _isLiked ? Icons.favorite : Icons.favorite_border,
+                          color: _isLiked ? Colors.red : Colors.black,
                         ),
                       ),
                       Text(
-                        widget.post.likes.toString() + ' Likes',
+                        '$_likesCount Likes',
                       ),
                     ],
                   ),
