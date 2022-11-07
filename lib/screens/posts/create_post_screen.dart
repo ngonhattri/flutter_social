@@ -12,7 +12,9 @@ import 'package:flutter_social/Widgets/RoundedButton.dart';
 class CreatePostScreen extends StatefulWidget {
   final String currentUserId;
 
-  const CreatePostScreen({Key? key,required this.currentUserId}) : super(key: key);
+  const CreatePostScreen({Key? key, required this.currentUserId})
+      : super(key: key);
+
   @override
   _CreatePostScreenState createState() => _CreatePostScreenState();
 }
@@ -20,20 +22,32 @@ class CreatePostScreen extends StatefulWidget {
 class _CreatePostScreenState extends State<CreatePostScreen> {
   late String _postText;
   File? _pickedImage;
+  final _text = TextEditingController();
   bool _loading = false;
+  bool _validate = false;
 
   handleImageFromGallery() async {
     try {
-      XFile? imageXFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+      XFile? imageXFile =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
       File imageFile = File(imageXFile!.path);
-      if (imageFile != null) {
-        setState(() {
-          _pickedImage = imageFile;
-        });
-      }
+      setState(() {
+        _pickedImage = imageFile;
+      });
     } catch (e) {
       print(e);
     }
+  }
+  @override
+  void initState() {
+    _text.text = "";
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _text.dispose();
+    super.dispose();
   }
 
   @override
@@ -43,7 +57,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       appBar: AppBar(
         backgroundColor: kocialColor,
         centerTitle: true,
-        title: Text(
+        title: const Text(
           'Post',
           style: TextStyle(
             color: Colors.white,
@@ -55,34 +69,36 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           children: [
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextField(
+              controller: _text,
               maxLength: 280,
               maxLines: 7,
               decoration: InputDecoration(
                 hintText: 'Enter your post',
+                errorText: _validate ? 'Value Can\'t Be Empty' : null,
               ),
               onChanged: (value) {
                 _postText = value;
               },
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             _pickedImage == null
-                ? SizedBox.shrink()
+                ? const SizedBox.shrink()
                 : Column(
-              children: [
-                Container(
-                  height: 200,
-                  decoration: BoxDecoration(
-                      color: kocialColor,
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: FileImage(_pickedImage!),
-                      )),
-                ),
-                SizedBox(height: 20),
-              ],
-            ),
+                    children: [
+                      Container(
+                        height: 200,
+                        decoration: BoxDecoration(
+                            color: kocialColor,
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: FileImage(_pickedImage!),
+                            )),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
             GestureDetector(
               onTap: handleImageFromGallery,
               child: Container(
@@ -96,27 +112,27 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     width: 2,
                   ),
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.camera_alt,
                   size: 50,
                   color: kocialColor,
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             RoundedButton(
               btnText: 'Post',
               onBtnPressed: () async {
                 setState(() {
-                  _loading = true;
+                  _text.text.isEmpty ? _validate = true : _validate = false;
                 });
-                if (_postText != null && _postText.isNotEmpty) {
+                if (_postText.isNotEmpty) {
                   String image;
                   if (_pickedImage == null) {
                     image = '';
                   } else {
                     image =
-                    await StorageService.uploadPostPicture(_pickedImage!);
+                        await StorageService.uploadPostPicture(_pickedImage!);
                   }
                   Post post = Post(
                     text: _postText,
@@ -129,15 +145,16 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     ),
                   );
                   DatabaseService.createPost(post);
-                  Navigator.pop(context);
+                  if (!mounted) return;
+                  Navigator.of(context).pop();
                 }
                 setState(() {
                   _loading = false;
                 });
               },
             ),
-            SizedBox(height: 20),
-            _loading ? CircularProgressIndicator() : SizedBox.shrink()
+            const SizedBox(height: 20),
+            _loading ? const CircularProgressIndicator() : const SizedBox.shrink()
           ],
         ),
       ),
