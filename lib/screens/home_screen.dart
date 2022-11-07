@@ -74,11 +74,10 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
-          elevation: 0.5,
           centerTitle: true,
           leading: Container(
             height: 40,
-            child: Image.asset('assets/anya.png'),
+            child: Image.asset('assets/kocial_logo2.png'),
           ),
           title: Text(
             'Home Screen',
