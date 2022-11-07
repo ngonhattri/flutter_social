@@ -65,8 +65,13 @@ class DatabaseService {
             });
   }
 
-  static Future<bool> isFollowingUser(String currentUserId, String visitedUserId) async {
-    DocumentSnapshot followingDoc = await followersRef.doc(visitedUserId).collection('Followers').doc(currentUserId).get();
+  static Future<bool> isFollowingUser(
+      String currentUserId, String visitedUserId) async {
+    DocumentSnapshot followingDoc = await followersRef
+        .doc(visitedUserId)
+        .collection('Followers')
+        .doc(currentUserId)
+        .get();
     return followingDoc.exists;
   }
 
@@ -81,7 +86,7 @@ class DatabaseService {
       'shares': post.shares,
     }).then((doc) async {
       QuerySnapshot followerSnapshot =
-      await followersRef.doc(post.auhorId).collection('Followers').get();
+          await followersRef.doc(post.auhorId).collection('Followers').get();
       for (var docSnapshot in followerSnapshot.docs) {
         feedRefs.doc(docSnapshot.id).collection('userFeed').doc(doc.id).set({
           'text': post.text,
@@ -114,8 +119,66 @@ class DatabaseService {
         .get();
 
     List<Post> followingPosts =
-    homePosts.docs.map((doc) => Post.fromDoc(doc)).toList();
+        homePosts.docs.map((doc) => Post.fromDoc(doc)).toList();
     return followingPosts;
   }
 
+  static void likePost(String currentUserId, Post post) {
+    DocumentReference postDocProfile =
+        postsRef.doc(post.auhorId).collection("userPosts").doc(post.id);
+    postDocProfile.get().then((doc) {
+      int likes = (doc.data() as Map<String,dynamic>)['likes'];
+      postDocProfile.update({'likes': likes + 1});
+    });
+
+    DocumentReference postDocFeed =
+        feedRefs.doc(currentUserId).collection("userFeed").doc(post.id);
+    postDocFeed.get().then((doc) {
+      if (doc.exists) {
+        int likes = (doc.data() as Map<String,dynamic>)["likes"];
+        postDocFeed.update({'likes': likes + 1});
+      }
+    });
+
+    likesRefs
+        .doc(post.id)
+        .collection('postLikes')
+        .doc(currentUserId)
+        .get()
+        .then((doc) => doc.reference.set({}));
+  }
+
+  static void unLikePost(String currentUserId, Post post) {
+    DocumentReference postDocProfile =
+        postsRef.doc(post.auhorId).collection("userPosts").doc(post.id);
+    postDocProfile.get().then((doc) {
+      int likes = (doc.data() as Map<String,dynamic>)['likes'];
+      postDocProfile.update({'likes': likes - 1});
+    });
+
+    DocumentReference postDocFeed =
+        feedRefs.doc(currentUserId).collection("userFeed").doc(post.id);
+    postDocFeed.get().then((doc) {
+      if (doc.exists) {
+        int likes = (doc.data() as Map<String,dynamic>)["likes"];
+        postDocFeed.update({'likes': likes - 1});
+      }
+    });
+
+    likesRefs
+        .doc(post.id)
+        .collection('postLikes')
+        .doc(currentUserId)
+        .get()
+        .then((doc) => doc.reference.delete());
+  }
+
+  static Future<bool> isLikePost(String currentUserId, Post post) async {
+    DocumentSnapshot userDoc = await likesRefs
+        .doc(post.id)
+        .collection("postLikes")
+        .doc(currentUserId)
+        .get();
+    return userDoc.exists;
+  }
 }

@@ -32,8 +32,8 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
   List<Post> _mediaPosts = [];
 
   int _profileSegmentedValue = 0;
-  final Map<int, Widget> _profileTabs = <int, Widget>{
-    0: Padding(
+  final Map<int, Widget> _profileTabs = <int, Widget> {
+    0: const Padding(
       padding: EdgeInsets.symmetric(vertical: 10),
       child: Text(
         'Posts',
@@ -44,21 +44,10 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
         ),
       ),
     ),
-    1: Padding(
+    1: const Padding(
       padding: EdgeInsets.symmetric(vertical: 10),
       child: Text(
         'Media',
-        style: TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.w700,
-          color: Colors.white,
-        ),
-      ),
-    ),
-    2: Padding(
-      padding: EdgeInsets.symmetric(vertical: 10),
-      child: Text(
-        'Likes',
         style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.w700,
@@ -73,30 +62,29 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
       case 0:
         return ListView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: _allPosts.length,
             itemBuilder: (context, index) {
               return PostContainer(
                 post: _allPosts[index],
                 author: author,
+                currentUserId: widget.currentUserId,
               );
             });
       case 1:
         return ListView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: _mediaPosts.length,
             itemBuilder: (context, index) {
               return PostContainer(
                 post: _mediaPosts[index],
                 author: author,
+                currentUserId: widget.currentUserId,
               );
             });
-      case 2:
-        return Center(child: Text('Likes', style: TextStyle(fontSize: 25)));
-
       default:
-        return Center(
+        return const Center(
             child: Text('Something wrong', style: TextStyle(fontSize: 25)));
     }
   }
@@ -208,8 +196,8 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                           ),
                   ),
                   child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -273,13 +261,14 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                                   child: Container(
                                     width: 100,
                                     height: 35,
-                                    padding: EdgeInsets.symmetric(horizontal: 10),
+                                    padding:
+                                        const EdgeInsets.symmetric(horizontal: 10),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
                                       color: Colors.white,
                                       border: Border.all(color: kocialColor),
                                     ),
-                                    child: Center(
+                                    child: const Center(
                                       child: Text(
                                         'Edit',
                                         style: TextStyle(
@@ -324,32 +313,32 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                       const SizedBox(height: 10),
                       Text(
                         userModel.name,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Text(
                         userModel.bio,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 15,
                         ),
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       Row(
                         children: [
                           Text(
                             '$_followingCount Following',
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
                                 letterSpacing: 2),
                           ),
-                          SizedBox(width: 20),
+                          const SizedBox(width: 20),
                           Text(
                             '$_followersCount Followers',
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
                                 letterSpacing: 2),

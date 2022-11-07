@@ -17,3 +17,5 @@ final storageRef = FirebaseStorage.instance.ref();
 final postsRef = _fireStore.collection('posts');
 
 final feedRefs = _fireStore.collection('feeds');
+
+final likesRefs = _fireStore.collection("likes");
