@@ -75,11 +75,11 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           centerTitle: true,
-          leading: Container(
+          leading: SizedBox(
             height: 40,
             child: Image.asset('assets/kocial_logo2.png'),
           ),
-          title: Text(
+          title: const Text(
             'Home Screen',
             style: TextStyle(
               color: kocialColor,
@@ -89,16 +89,16 @@ class _HomeScreenState extends State<HomeScreen> {
         body: RefreshIndicator(
           onRefresh: () => setupFollowingPosts(),
           child: ListView(
-            physics: BouncingScrollPhysics(
+            physics: const BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics(),
             ),
             children: [
-              _loading ? LinearProgressIndicator() : SizedBox.shrink(),
+              _loading ? const LinearProgressIndicator() : const SizedBox.shrink(),
               const SizedBox(height: 5),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Column(
                     children: _followingPosts.isEmpty && _loading == false
                         ? [
