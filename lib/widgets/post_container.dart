@@ -27,7 +27,7 @@ class _PostContainerState extends State<PostContainer> {
   initPostLikes() async {
     bool isLiked =
         await DatabaseService.isLikePost(widget.currentUserId, widget.post);
-    if(mounted) {
+    if (mounted) {
       setState(() {
         _isLiked = isLiked;
       });
@@ -60,7 +60,7 @@ class _PostContainerState extends State<PostContainer> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -75,25 +75,23 @@ class _PostContainerState extends State<PostContainer> {
               const SizedBox(width: 10),
               Text(
                 widget.author.name,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           Text(
             widget.post.text,
-            style: TextStyle(
-              fontSize: 15,
-            ),
+            style: const TextStyle(fontSize: 15),
           ),
           widget.post.image.isEmpty
-              ? SizedBox.shrink()
+              ? const SizedBox.shrink()
               : Column(
                   children: [
-                    SizedBox(height: 15),
+                    const SizedBox(height: 15),
                     Container(
                       height: 250,
                       decoration: BoxDecoration(
@@ -107,7 +105,7 @@ class _PostContainerState extends State<PostContainer> {
                     )
                   ],
                 ),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -122,34 +120,28 @@ class _PostContainerState extends State<PostContainer> {
                           color: _isLiked ? Colors.red : Colors.black,
                         ),
                       ),
-                      Text(
-                        '$_likesCount Likes',
-                      ),
+                      Text('$_likesCount Likes'),
                     ],
                   ),
                   Row(
                     children: [
                       IconButton(
                         onPressed: () {},
-                        icon: Icon(
-                          Icons.repeat,
-                        ),
+                        icon: const Icon(Icons.repeat),
                       ),
-                      Text(
-                        widget.post.shares.toString() + ' Shares',
-                      ),
+                      Text('${widget.post.shares} Shares'),
                     ],
                   ),
                 ],
               ),
               Text(
                 widget.post.timestamp.toDate().toString().substring(0, 19),
-                style: TextStyle(color: Colors.grey),
+                style: const TextStyle(color: Colors.grey),
               ),
             ],
           ),
-          SizedBox(height: 10),
-          Divider(),
+          const SizedBox(height: 10),
+          const Divider(),
         ],
       ),
     );

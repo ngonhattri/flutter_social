@@ -30,25 +30,22 @@ class _FeedScreenState extends State<FeedScreen> {
           visitedUserId: widget.currentUserId,
         ),
       ].elementAt(_selectedTab),
-      floatingActionButton: Visibility(
-        visible: false,
-        child: FloatingActionButton(
-          backgroundColor: Colors.white,
-          child: const Icon(
-            Icons.add,
-            color: Color(0xff00acee),
-          ),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CreatePostScreen(
-                  currentUserId: widget.currentUserId,
-                ),
-              ),
-            );
-          },
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white,
+        child: const Icon(
+          Icons.add,
+          color: Color(0xff00acee),
         ),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CreatePostScreen(
+                currentUserId: widget.currentUserId,
+              ),
+            ),
+          );
+        },
       ),
       bottomNavigationBar: CupertinoTabBar(
         onTap: (index) {

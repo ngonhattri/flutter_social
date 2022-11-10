@@ -39,7 +39,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   displayProfileImage() {
     if (_profileImage == null) {
       if (widget.user.profilePicture.isEmpty) {
-        return AssetImage('assets/anya.png');
+        return const AssetImage('assets/anya.png');
       } else {
         return NetworkImage(widget.user.profilePicture);
       }
@@ -84,7 +84,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   handleImageFromGallery() async {
     try {
-      XFile? imageXFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+      XFile? imageXFile =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
       File imageFile = File(imageXFile!.path);
       if (_imagePickedType == 'profile') {
         setState(() {
@@ -140,7 +141,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
+                    children: const [
                       Icon(
                         Icons.camera_alt,
                         size: 70,
@@ -163,7 +164,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
           Container(
             transform: Matrix4.translationValues(0, -40, 0),
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
                 Row(
@@ -187,7 +188,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
+                              children: const [
                                 Icon(
                                   Icons.camera_alt,
                                   size: 30,
@@ -213,12 +214,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       child: Container(
                         width: 100,
                         height: 35,
-                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           color: kocialColor,
                         ),
-                        child: Center(
+                        child: const Center(
                           child: Text(
                             'Save',
                             style: TextStyle(
@@ -239,7 +240,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       const SizedBox(height: 30),
                       TextFormField(
                         initialValue: _name,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Name',
                           labelStyle: TextStyle(color: kocialColor),
                         ),
@@ -253,7 +254,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       const SizedBox(height: 30),
                       TextFormField(
                         initialValue: _bio,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Bio',
                           labelStyle: TextStyle(color: kocialColor),
                         ),
