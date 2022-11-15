@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_social/constants/constants.dart';
+import 'package:flutter_social/models/activity_model.dart';
 import 'package:flutter_social/models/post.dart';
 import 'package:flutter_social/models/user_model.dart';
 
@@ -44,6 +45,8 @@ class DatabaseService {
         .collection('Followers')
         .doc(currentUserId)
         .set({});
+
+    addActivity(currentUserId, null, true, visitedUserId);
   }
 
   static void unFollowUser(String currentUserId, String visitedUserId) {
@@ -146,6 +149,8 @@ class DatabaseService {
         .doc(currentUserId)
         .get()
         .then((doc) => doc.reference.set({}));
+
+    addActivity(currentUserId, post, false, null);
   }
 
   static void unLikePost(String currentUserId, Post post) {
@@ -180,5 +185,37 @@ class DatabaseService {
         .doc(currentUserId)
         .get();
     return userDoc.exists;
+  }
+
+  static Future<List<Activity>> getActivities(String userId) async {
+    QuerySnapshot userActivitiesSnapshot = await activitiesRef
+        .doc(userId)
+        .collection('userActivities')
+        .orderBy('timeStamp', descending: true)
+        .get();
+
+    List<Activity> activities = userActivitiesSnapshot.docs
+        .map((doc) => Activity.fromDoc(doc))
+        .toList();
+
+    return activities;
+  }
+
+  static void addActivity(
+      String currentUserId, Post? post, bool follow, String? followedUserId) {
+    if (follow) {
+      activitiesRef.doc(followedUserId).collection('userActivities').add({
+        'fromUserId': currentUserId,
+        'timeStamp': Timestamp.fromDate(DateTime.now()),
+        "follow": true,
+      });
+    } else {
+      //like
+      activitiesRef.doc(post!.auhorId).collection('userActivities').add({
+        'fromUserId': currentUserId,
+        'timeStamp': Timestamp.fromDate(DateTime.now()),
+        "follow": false,
+      });
+    }
   }
 }
