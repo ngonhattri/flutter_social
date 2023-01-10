@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_social/profile/profile.dart';
+import 'package:flutter_social/screens/events/events_screen.dart';
 import 'package:flutter_social/screens/home_screen.dart';
 import 'package:flutter_social/screens/notifications/notifications_screen.dart';
 import 'package:flutter_social/screens/posts/create_post_screen.dart';
@@ -26,6 +27,7 @@ class _FeedScreenState extends State<FeedScreen> {
         SearchScreen(
           currentUserId: widget.currentUserId,
         ),
+        const EventsScreen(),
         NotificationsScreen(currentUserId: widget.currentUserId),
         ProfileScreen(
           currentUserId: widget.currentUserId,
@@ -60,6 +62,7 @@ class _FeedScreenState extends State<FeedScreen> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home)),
           BottomNavigationBarItem(icon: Icon(Icons.search)),
+          BottomNavigationBarItem(icon: Icon(Icons.event_note)),
           BottomNavigationBarItem(icon: Icon(Icons.notifications)),
           BottomNavigationBarItem(icon: Icon(Icons.person)),
         ],

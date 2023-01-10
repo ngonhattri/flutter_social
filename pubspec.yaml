@@ -50,6 +50,7 @@ dependencies:
   flutter_image_compress:
   path_provider:
   uuid:
+  webview_flutter: ^3.0.4
 
 dev_dependencies:
   flutter_test:
