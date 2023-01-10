@@ -39,7 +39,19 @@ class DatabaseService {
         .doc(currentUserId)
         .collection('Following')
         .doc(visitedUserId)
-        .set({});
+        .set({}).then((doc) async {
+      List<Post> userPosts = await getUserPosts(visitedUserId);
+      for (var post in userPosts) {
+        feedRefs.doc(currentUserId).collection('userFeed').doc(post.id).set({
+          'text': post.text,
+          'image': post.image,
+          "authorId": post.auhorId,
+          "timeStamp": post.timestamp,
+          'likes': post.likes,
+          'shares': post.shares,
+        });
+      }
+    });
     followersRef
         .doc(visitedUserId)
         .collection('Followers')
@@ -55,8 +67,12 @@ class DatabaseService {
         .collection('Following')
         .doc(visitedUserId)
         .get()
-        .then((doc) => {
-              if (doc.exists) {doc.reference.delete()}
+        .then((doc) async {
+              if (doc.exists) {doc.reference.delete();}
+              List<Post> userPosts = await getUserPosts(visitedUserId);
+              for (var post in userPosts) {
+                feedRefs.doc(currentUserId).collection('userFeed').doc(post.id).delete();
+              }
             });
     followersRef
         .doc(visitedUserId)
